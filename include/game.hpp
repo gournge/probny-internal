@@ -6,7 +6,7 @@ using std::vector;
 namespace gm 
 {
 
-enum sign {empty, Circle, Cross};
+enum signs {empty, Circle, Cross};
 
 class game 
 {
@@ -14,7 +14,7 @@ class game
         int size; bool if_computer;
         std::string name1, name2;
         vector<gm::sign> data;
-        sign sign1;
+        sign sign1; // sign of the first player
     public:
         game();
         // move in a position (pvp)
