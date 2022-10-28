@@ -4,12 +4,12 @@
 
 #define ASK(IN, OUT) std::cout << OUT; std::cin >> IN; std::cout << "\n";
 
-gm::game::game()
+game::game()
 { 
     ASK(size, "Enter the size of the TicTacToe grid: ")
     ASK(if_computer, "Do you want to play against a computer? (0/1) ")
 
-    std::vector<gm::sint> data(size*size, 0);
+    std::vector<int> data(size*size, 0); data[0]=2;
     
     if (if_computer) {
         ASK(name1, "What is the player's 1 name? ");
@@ -36,10 +36,15 @@ gm::game::game()
     play();
 }
 
-void gm::game::play() 
+void game::play() 
 {   
+    std::cout << "wow ";
+    std::cout << data[0] << " hee";
+
     do {
+        std::cout << "test1\n";
         display();
+        std::cout << "test2\n";
 
         if (is_1_first) {
             player2();
@@ -55,10 +60,10 @@ void gm::game::play()
 }
 
 // make a move
-void gm::game::player1() 
+void game::player1() 
 {
     if (who_won || skip) { skip=0; return; } 
-    gm::sint x, y;
+    int x, y;
     std::cout << name1 << " moves at:\n";
     std::cin >> x >> y;
 
@@ -70,11 +75,11 @@ void gm::game::player1()
     check(1, x, y);
 }
 
-void gm::game::player2() 
+void game::player2() 
 {
     if (who_won || skip) { skip=0; return; } 
 
-    gm::sint x, y;
+    int x, y;
     if (if_computer) {
         machine(x, y);
         std::cout << "Computer moves:\n";
@@ -93,14 +98,14 @@ void gm::game::player2()
 }
 
 // calculate next move on x, y
-void gm::game::machine(gm::sint& x, gm::sint& y)
+void game::machine(int& x, int& y)
 {
-    alg::t_minimax(data, x, y, is_1_first);
+    t_minimax(data, x, y, is_1_first);
 }
 
 // display
-void gm::game::display() 
+void game::display() 
 {
-    std::cout << data[3]; // why not working?
+    // std::cout << data[3]; // why not working?
     gfx::display(data, size);
 }

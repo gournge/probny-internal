@@ -8,8 +8,8 @@ using std::max; using std::min;
 // true if first player wins, false otherwise.
 // arg. player1 should be true only if it is 
 // the first player making the move
-void gm::game::check(bool player1, gm::sint x, gm::sint y) {
-    sint tocheck = player1 ? sign1 : sign2; 
+void game::check(bool player1, int x, int y) {
+    int tocheck = player1 ? sign1 : sign2; 
     if (to_win > 3) 
     {
         // perpendicular lines check 

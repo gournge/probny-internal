@@ -3,6 +3,6 @@
 
 int main() 
 {
-    gm::game Game; 
+    game Game; 
     return 0;
 }

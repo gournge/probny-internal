@@ -1,19 +1,18 @@
 #include "display.hpp"
 #include <iostream>
 #include <vector>
-using std::vector;
 
-void gfx::display(vector<gfx::sint> data, int size) 
+void gfx::display(std::vector<int> table, int size) 
 {
-    std::cout << "test1";
-    data[0] = 2;
-    std::cout << data[0];
-    std::cout << "test2";
+    std::cout << "test3\n";
+    // table[0] = 2;
+    std::cout << table[0];
+    std::cout << "test4\n";
 
     char s[] = {'#', 'X', 'O'};
     for (int x=0; x<size; x++) {
         for (int y=0; y<size; y++) {
-            std::cout << data[y*size + x];
+            std::cout << table[y*size + x];
             std::cout << x << y << size;
         } 
         std::cout << "\n";

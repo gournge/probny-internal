@@ -3,46 +3,35 @@
 #include <functional>
 #include <random>
 
-using std::vector;
-
-namespace gm 
-{
-
-typedef unsigned short int sint;
-
 class game 
 {
 public:
-        game();
-        vector<sint> data;
+    game();
+    std::vector<int> data;
+private: 
+    bool if_computer;
+    int size; 
+    int to_win; // # of signs in line to win
 
+    // sign of the first player
+    int sign1, sign2; 
+    std::string name1, name2;
 
-    private: 
-        bool if_computer;
-        int size; 
-        int to_win; // # of signs in line to win
+    bool is_1_first;
+    int who_won; // 0 no one, 1 player one, 2 player two
+    bool skip; // in case of mistake, skip the round
 
-        // sign of the first player
-        sint sign1, sign2; 
-        std::string name1, name2;
+    void play();
 
-        bool is_1_first;
-        sint who_won; // 0 no one, 1 player one, 2 player two
-        bool skip; // in case of mistake, skip the round
+    // move in a position (pvp)
+    void player1();
+    void player2(); 
 
-        void play();
+    // first arg only true if we are checking player 1
+    void check(bool, int, int);
 
-        // move in a position (pvp)
-        void player1();
-        void player2(); 
+    // return a move in machine vs human 
+    void machine(int&, int&);
 
-        // first arg only true if we are checking player 1
-        void check(bool, sint, sint);
-
-        // return a move in machine vs human 
-        void machine(sint&, sint&);
-
-        void display();
+    void display();
 };
-
-}

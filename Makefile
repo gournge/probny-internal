@@ -1,2 +1,2 @@
 make:
-	g++ -o tictactoe main.cpp src/*.cpp -Isrc -std=c++11
+	g++ -o tictactoe main.cpp src/*.cpp -Isrc
