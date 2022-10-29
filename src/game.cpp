@@ -9,7 +9,7 @@ game::game()
     ASK(size, "Enter the size of the TicTacToe grid: ")
     ASK(if_computer, "Do you want to play against a computer? (0/1) ")
 
-    std::vector<int> data(size*size, 0); data[0]=2;
+    data = std::vector<int>(size*size, 0);
     
     if (if_computer) {
         ASK(name1, "What is the player's 1 name? ");
@@ -20,14 +20,13 @@ game::game()
     }
 
     ASK(sign1, "Is player's 1 sign circle? (0/1) ");
-    sign2 =  sign1 == 1 ? sign2 : sign1;
+    sign2 = sign1 == 1 ? 2 : 1;
 
 
     std::cout << "Who will play first is now being randomly chosen.\n";
 
     auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
     is_1_first = gen();
-    // std::cout << is_1_first;
 
     to_win = size > 4 ? 5 : 3;
     who_won = 0;
@@ -37,20 +36,18 @@ game::game()
 }
 
 void game::play() 
-{   
-    std::cout << "wow ";
-    std::cout << data[0] << " hee";
+{  
 
     do {
-        std::cout << "test1\n";
         display();
-        std::cout << "test2\n";
 
         if (is_1_first) {
             player2();
+            display();
             player1();
         } else {
             player2();
+            display();
             player1();
         }
 
@@ -106,6 +103,5 @@ void game::machine(int& x, int& y)
 // display
 void game::display() 
 {
-    // std::cout << data[3]; // why not working?
     gfx::display(data, size);
 }

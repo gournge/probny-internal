@@ -4,17 +4,19 @@
 
 void gfx::display(std::vector<int> table, int size) 
 {
-    std::cout << "test3\n";
-    // table[0] = 2;
-    std::cout << table[0];
-    std::cout << "test4\n";
-
-    char s[] = {'#', 'X', 'O'};
-    for (int x=0; x<size; x++) {
-        for (int y=0; y<size; y++) {
-            std::cout << table[y*size + x];
-            std::cout << x << y << size;
+    char s[] = {' ', 'X', 'O'};
+    for (int x=0; x<size-1; x++) {
+        for (int y=0; y<size-1; y++) {
+            std::cout << s[table[y*size + x]] << '|';
         } 
-        std::cout << "\n";
-    }   
+        std::cout << s[table[(size-1)*size + x]] << '\n';
+        for (int y=0; y<2*size-1; y++) {
+            std::cout << '-';
+        } 
+        std::cout << '\n';
+    }
+    for (int y=0; y<size-1; y++) {
+        std::cout << s[table[size*(y+1)-1]] << '|';
+    } 
+    std::cout << s[table[size*size-1]] << '\n' << '\n';  
 }
