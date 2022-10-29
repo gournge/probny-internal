@@ -17,10 +17,12 @@ game::game()
     } else {
         ASK(name1, "What is player's 1 name? ");
         ASK(name2, "What is player's 2 name? ");
-    }
+    } 
 
-    ASK(sign1, "Is player's 1 sign circle? (0/1) ");
-    sign2 = sign1 == 1 ? 2 : 1;
+    bool one_circle;
+    ASK(one_circle, "Is player's 1 sign circle? (0/1) ");
+    sign1 = one_circle ? 2 : 1;
+    sign2 = one_circle ? 1 : 2;
 
 
     std::cout << "Who will play first is now being randomly chosen.\n";
