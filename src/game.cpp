@@ -3,6 +3,7 @@
 #include "minimax.hpp"
 
 #define ASK(IN, OUT) std::cout << OUT; std::cin >> IN; std::cout << "\n";
+#define BTWN(VAR, A, B) ((A <= VAR) && (VAR < B))
 
 game::game()
 { 
@@ -27,10 +28,10 @@ game::game()
 
     std::cout << "Who will play first is now being randomly chosen.\n";
 
-    auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
+    auto gen = std::bind(std::uniform_int_distribution<>(0,2),std::default_random_engine());
     is_1_first = gen();
 
-    to_win = size > 4 ? 5 : 3;
+    to_win = size > 4 ? 4 : 3;
     who_won = 0;
     skip = 0;
 
@@ -45,17 +46,17 @@ void game::play()
 
         if (is_1_first) {
             player2();
-            display();
+            if (!skip) display();
             player1();
         } else {
             player2();
-            display();
+            if (!skip) display();
             player1();
         }
 
     } while (!who_won);
    
-    std::cout << "Player " << (who_won == 1 ? name1 : name2) << "won!";
+    std::cout << "Player " << (who_won == 1 ? name1 : name2) << " won!";
 }
 
 // make a move
@@ -67,7 +68,12 @@ void game::player1()
     std::cin >> x >> y;
 
     // if occupied
-    if (data[y*(size) + x]) { skip=1; return; }
+    if (data[y*(size) + x] || !BTWN(x, 0, size) || !BTWN(y, 0, size) )
+    { 
+    skip=1; 
+    std::cout << "try again!\n"; 
+    return; 
+    }
 
     data[y*(size) + x] = sign1;
 
@@ -89,7 +95,12 @@ void game::player2()
     }
 
     // if occupied
-    if (data[y*(size) + x]) { skip=1; return; }
+    if (data[y*(size) + x] || !BTWN(x, 0, size) || !BTWN(y, 0, size) )
+    { 
+    skip=1; 
+    std::cout << "try again!\n"; 
+    return; 
+    }
 
     data[y*(size) + x] = sign2;
 

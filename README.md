@@ -6,7 +6,7 @@
     - player vs computer
 - 3x3 … 10x10 grids
     - 3x3, 4x4 winning is 3 in line
-    - 5x5 … winning is 5 in line
+    - 5x5 … winning is 4 in line
 - name distinction
 - random sign selection
 - if a player picks an occupied cell he losts his move

@@ -6,11 +6,16 @@
 class game 
 {
 public:
-    game();
     std::vector<int> data;
+    int size; 
+
+    game();
+
+    // first arg only true if we are checking player 1
+    void check(bool, int, int);
+
 private: 
     bool if_computer;
-    int size; 
     int to_win; // # of signs in line to win
 
     // sign of the first player
@@ -27,11 +32,9 @@ private:
     void player1();
     void player2(); 
 
-    // first arg only true if we are checking player 1
-    void check(bool, int, int);
-
     // return a move in machine vs human 
     void machine(int&, int&);
 
     void display();
+
 };
