@@ -1,16 +1,17 @@
 #include "game.hpp"
-#include "display.hpp"
-#include "minimax.hpp"
+#include <iostream>
+
 
 #define ASK(IN, OUT) std::cout << OUT; std::cin >> IN; std::cout << "\n";
-#define BTWN(VAR, A, B) ((A <= VAR) && (VAR < B))
 
-game::game()
+
+Game::Game()
 { 
+    int size;
     ASK(size, "Enter the size of the TicTacToe grid: ")
     ASK(if_computer, "Do you want to play against a computer? (0/1) ")
 
-    data = std::vector<int>(size*size, 0);
+    state = uts::State(size);
     
     if (if_computer) {
         ASK(name1, "What is the player's 1 name? ");
@@ -22,8 +23,8 @@ game::game()
 
     bool one_circle;
     ASK(one_circle, "Is player's 1 sign circle? (0/1) ");
-    sign1 = one_circle ? 2 : 1;
-    sign2 = one_circle ? 1 : 2;
+    sign1 = one_circle ? uts::Circle : uts::Cross;
+    sign2 = one_circle ? uts::Cross : uts::Circle;
 
 
     std::cout << "Who will play first is now being randomly chosen.\n";
@@ -31,90 +32,87 @@ game::game()
     auto gen = std::bind(std::uniform_int_distribution<>(0,2),std::default_random_engine());
     is_1_first = gen();
 
-    to_win = size > 4 ? 4 : 3;
-    who_won = 0;
     skip = 0;
 
     play();
 }
 
-void game::play() 
+void Game::play() 
 {  
-
     do {
         display();
 
         if (is_1_first) {
-            player2();
-            if (!skip) display();
             player1();
+            if (!skip) display();
+            player2();
         } else {
             player2();
             if (!skip) display();
             player1();
         }
 
-    } while (!who_won);
+    } while (who_won);
    
     std::cout << "Player " << (who_won == 1 ? name1 : name2) << " won!";
 }
 
-// make a move
-void game::player1() 
+void Game::player1() 
 {
-    if (who_won || skip) { skip=0; return; } 
-    int x, y;
-    std::cout << name1 << " moves at:\n";
-    std::cin >> x >> y;
+    if (!who_won || skip) 
+    { skip=0; return; } 
 
-    // if occupied
-    if (data[y*(size) + x] || !BTWN(x, 0, size) || !BTWN(y, 0, size) )
+    uts::Pos p;
+    std::cout << name1 << " moves at:\n";
+    std::cin >> p.x >> p.y;
+
+    // if occupied or invalid
+    if (!state.at(p) || !p.below(state.size))
     { 
-    skip=1; 
-    std::cout << "try again!\n"; 
-    return; 
+        skip=1; 
+        std::cout << "try again!\n"; 
+        return; 
     }
 
-    data[y*(size) + x] = sign1;
+    state.put(sign1, p);
 
-    check(1, x, y);
+    who_won = check(sign1, p) ? sign1 : sign2;
 }
 
-void game::player2() 
+void Game::player2() 
 {
-    if (who_won || skip) { skip=0; return; } 
+    if (!who_won || skip) 
+    { skip=0; return; } 
 
-    int x, y;
+    uts::Pos p{-1, -1}; // init with value for Game:machine 
     if (if_computer) {
-        machine(x, y);
+        machine(p);
         std::cout << "Computer moves:\n";
-        std::cout << x << " " << y << "\n";
+        std::cout << p.x << " " << p.y << "\n";
     } else {
         std::cout << name2 << " moves at:\n";
-        std::cin >> x >> y;
+        std::cin >> p.x >> p.y;
     }
 
-    // if occupied
-    if (data[y*(size) + x] || !BTWN(x, 0, size) || !BTWN(y, 0, size) )
+    // if occupied or invalid
+    if (!state.at(p) || !p.below(state.size))
     { 
-    skip=1; 
-    std::cout << "try again!\n"; 
-    return; 
+        skip=1; 
+        std::cout << "try again!\n"; 
+        return; 
     }
 
-    data[y*(size) + x] = sign2;
+    state.put(sign2, p);
 
-    check(0, x, y);
+    who_won = check(sign2, p) ? sign2 : sign1;
 }
 
-// calculate next move on x, y
-void game::machine(int& x, int& y)
+void Game::machine(uts::Pos& p)
 {
-    t_minimax(data, x, y, is_1_first);
+    uts::minimax(state, sign2, 10, p);
 }
 
-// display
-void game::display() 
+bool Game::check(uts::Sign sign, uts::Pos pos)
 {
-    gfx::display(data, size);
+    return uts::check(state, sign, pos);
 }

@@ -1,8 +1,7 @@
-#include <iostream>
 #include "game.hpp"
 
 int main() 
 {
-    game Game; 
+    Game game;
     return 0;
 }

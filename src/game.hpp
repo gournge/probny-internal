@@ -1,40 +1,36 @@
+#include "utils.hpp"
 #include <iostream>
-#include <vector>
 #include <functional>
 #include <random>
 
-class game 
+class Game 
 {
-public:
-    std::vector<int> data;
-    int size; 
+    public:
+        Game();
 
-    game();
+    private:
+        uts::State state;
+        int to_win;
 
-    // first arg only true if we are checking player 1
-    void check(bool, int, int);
+        bool is_1_first;
+        bool if_computer;
+        uts::Sign   sign1, sign2;
+        std::string name1, name2;
 
-private: 
-    bool if_computer;
-    int to_win; // # of signs in line to win
+        bool skip;
+        uts::Sign who_won;
 
-    // sign of the first player
-    int sign1, sign2; 
-    std::string name1, name2;
+        void play();
+        void display();
 
-    bool is_1_first;
-    int who_won; // 0 no one, 1 player one, 2 player two
-    bool skip; // in case of mistake, skip the round
+        // move in a position (pvp)
+        void player1();
+        void player2(); 
 
-    void play();
+        // move in machine vs human 
+        // pos gets the value 
+        void machine(uts::Pos&);
 
-    // move in a position (pvp)
-    void player1();
-    void player2(); 
-
-    // return a move in machine vs human 
-    void machine(int&, int&);
-
-    void display();
+        bool check(uts::Sign, uts::Pos);
 
 };
