@@ -107,9 +107,44 @@ void Game::player2()
     who_won = check(sign2, p) ? sign2 : sign1;
 }
 
-void Game::machine(uts::Pos& p)
+void Game::machine(uts::Pos& final)
 {
-    uts::minimax(state, sign2, 10, p);
+    if(sign2 == uts::Circle) 
+    {
+        int best_v = 2;
+        uts::Pos best_p;
+        for (auto temp_p : uts::options(state)) 
+        {
+            state.put(sign2, temp_p);
+
+            int temp_v = uts::minimax(state, sign2, state.data.size(), temp_p); 
+            if (temp_v < best_v)
+            {
+                best_p = temp_p;
+                best_v = temp_v;
+            }
+            state.put(uts::empty, temp_p);
+        }
+        final = best_p;
+    }
+    else
+    {
+        int best_v = -2;
+        uts::Pos best_p;
+        for (auto temp_p : uts::options(state)) 
+        {
+            state.put(sign2, temp_p);
+
+            int temp_v = uts::minimax(state, sign2, state.data.size(), temp_p); 
+            if (temp_v > best_v)
+            {
+                best_p = temp_p;
+                best_v = temp_v;
+            }
+            state.put(uts::empty, temp_p);
+        }
+        final = best_p;
+    }
 }
 
 bool Game::check(uts::Sign sign, uts::Pos pos)

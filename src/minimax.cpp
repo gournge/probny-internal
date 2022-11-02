@@ -5,30 +5,26 @@
 using std::max;
 using std::min;
 
-#define PINF  2147483647
-#define NINF -2147483648
 
 typedef uts::State st;
 typedef uts::Pos p;
 
-
+// - returns the best atttainable score
 // - it doesnt matter if sign is circle or cross
-// - pos will get the optimal choice
-// - sign2 is minimizing sign1 is maximizing 
+// - Cross is maximizing Circle is minimizing
 int uts::minimax(
-st& state, uts::Sign sign, int depth, p& pos)
-{
+st& state, uts::Sign sign, int depth, p pos)
+{   
     if (uts::check(state, sign, pos)) 
     {
-        std::cout << "test1";
-        return sign == 1 ? 1 : -1;
+        return sign == uts::Cross ? 1 : -1;
     }
-    if (!depth || !uts::options(state).size()) return 0;
+    auto opts = uts::options(state);
+    if (!depth || !opts.size()) return 0;
     
     if (sign == uts::Cross)
     {
-        int max_eval  = NINF;
-        auto opts = uts::options(state);
+        int max_eval = -2;
         for (p child : opts)
         {
             state.put(sign, child);
@@ -40,8 +36,7 @@ st& state, uts::Sign sign, int depth, p& pos)
     } 
     else
     {
-        int min_eval  = PINF;
-        auto opts = uts::options(state);
+        int min_eval  = 2;
         for (p child : opts)
         {
             state.put(sign, child);
@@ -56,14 +51,14 @@ st& state, uts::Sign sign, int depth, p& pos)
 
 bool uts::check(st& state, uts::Sign sign, p pos)
 {
-    if (pos.below(state.size)) return 0;
+    if (!pos.below(state.size)) return 0;
 
     int to_win = state.size > 4 ? 4 : 3;
 
     // perpendicular lines check 
     for (int i{0}; i < to_win; i++) 
     {
-        int ver{0}, hor{0}, diag1{0}, diag2{0};
+        int ver{1}, hor{1}, diag1{1}, diag2{1};
         for (int j{0}; j<to_win; j++) {
 
             int xnew = pos.x-i+j, ynew = pos.y-i+j;
@@ -79,7 +74,12 @@ bool uts::check(st& state, uts::Sign sign, p pos)
                 state.at(xnew, ynew) == sign) diag1++;
 
             if (p{pos.x-i-j, ynew}.below(state.size) &&
-                state.at(pos.x-i-j, ynew) == sign) diag2++;      
+                state.at(pos.x-i-j, ynew) == sign) diag2++;  
+
+            // std::cout << i << " " << j << "\n";
+            // std::cout << ver << " " << hor << " " 
+            //         << diag1 << " " << diag2 << "\n";    
+            // std::cout << " - - - \n";
         }
         if (ver == to_win || hor == to_win || 
           diag1 == to_win || diag2 == to_win) return 1;

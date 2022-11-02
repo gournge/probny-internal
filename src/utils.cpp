@@ -1,11 +1,16 @@
 #include "utils.hpp"
 
-
 bool uts::Pos::below(int m) 
 {
     return (0 <= x) and (x < m) and
            (0 <= y) and (y < m);
 }
+
+uts::Pos::Pos()
+{ }
+
+uts::Pos::Pos(int nx, int ny) : x(nx), y(ny)
+{ }
 
 // - - -
 
