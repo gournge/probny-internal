@@ -23,15 +23,15 @@ Game::Game()
 
     bool one_circle;
     ASK(one_circle, "Is player's 1 sign circle? (0/1) ");
-    sign1 = one_circle ? uts::Circle : uts::Cross;
-    sign2 = one_circle ? uts::Cross : uts::Circle;
+    sign1 = !one_circle ? uts::Circle : uts::Cross;
+    sign2 = !one_circle ? uts::Cross : uts::Circle;
 
 
     std::cout << "Who will play first is now being randomly chosen.\n";
 
     auto gen = std::bind(std::uniform_int_distribution<>(0,2),std::default_random_engine());
     is_1_first = gen();
-
+    who_won = uts::empty;
     skip = 0;
 
     play();
@@ -40,26 +40,28 @@ Game::Game()
 void Game::play() 
 {  
     do {
-        display();
+        if (!skip) display();
 
         if (is_1_first) {
             player1();
             if (!skip) display();
+            if (who_won != uts::empty) break;
             player2();
         } else {
             player2();
             if (!skip) display();
+            if (who_won != uts::empty) break;
             player1();
         }
 
-    } while (who_won);
+    } while (who_won == uts::empty);
    
-    std::cout << "Player " << (who_won == 1 ? name1 : name2) << " won!";
+    std::cout << "Player " << ((who_won == sign1) ? name1 : name2) << " won!";
 }
 
 void Game::player1() 
 {
-    if (!who_won || skip) 
+    if ((who_won != uts::empty) || skip) 
     { skip=0; return; } 
 
     uts::Pos p;
@@ -67,7 +69,7 @@ void Game::player1()
     std::cin >> p.x >> p.y;
 
     // if occupied or invalid
-    if (!state.at(p) || !p.below(state.size))
+    if (!state.empty(p) || !p.below(state.size))
     { 
         skip=1; 
         std::cout << "try again!\n"; 
@@ -76,18 +78,18 @@ void Game::player1()
 
     state.put(sign1, p);
 
-    who_won = check(sign1, p) ? sign1 : sign2;
+    who_won = check(sign1, p) ? sign1 : uts::empty;
 }
 
 void Game::player2() 
 {
-    if (!who_won || skip) 
+    if ((who_won != uts::empty) || skip) 
     { skip=0; return; } 
 
     uts::Pos p{-1, -1}; // init with value for Game:machine 
     if (if_computer) {
-        machine(p);
         std::cout << "Computer moves:\n";
+        machine(p);
         std::cout << p.x << " " << p.y << "\n";
     } else {
         std::cout << name2 << " moves at:\n";
@@ -95,7 +97,7 @@ void Game::player2()
     }
 
     // if occupied or invalid
-    if (!state.at(p) || !p.below(state.size))
+    if (!state.empty(p) || !p.below(state.size))
     { 
         skip=1; 
         std::cout << "try again!\n"; 
@@ -104,46 +106,36 @@ void Game::player2()
 
     state.put(sign2, p);
 
-    who_won = check(sign2, p) ? sign2 : sign1;
+    who_won = check(sign2, p) ? sign2 : uts::empty;
 }
 
 void Game::machine(uts::Pos& final)
 {
+    auto opts = uts::options(state);
+
     if(sign2 == uts::Circle) 
     {
-        int best_v = 2;
-        uts::Pos best_p;
-        for (auto temp_p : uts::options(state)) 
+        for (auto pos : opts) 
         {
-            state.put(sign2, temp_p);
-
-            int temp_v = uts::minimax(state, sign2, state.data.size(), temp_p); 
-            if (temp_v < best_v)
+            if (uts::eval(state, uts::Circle, pos) == -1)
             {
-                best_p = temp_p;
-                best_v = temp_v;
+                final = pos;
+                return;
             }
-            state.put(uts::empty, temp_p);
         }
-        final = best_p;
+        final = opts[0];
     }
     else
     {
-        int best_v = -2;
-        uts::Pos best_p;
-        for (auto temp_p : uts::options(state)) 
+        for (auto pos : opts) 
         {
-            state.put(sign2, temp_p);
-
-            int temp_v = uts::minimax(state, sign2, state.data.size(), temp_p); 
-            if (temp_v > best_v)
+            if (uts::eval(state, uts::Cross, pos) == 1)
             {
-                best_p = temp_p;
-                best_v = temp_v;
+                final = pos;
+                return;
             }
-            state.put(uts::empty, temp_p);
         }
-        final = best_p;
+        final = opts[0];
     }
 }
 

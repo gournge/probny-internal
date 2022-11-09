@@ -2,13 +2,7 @@
 
 int main() 
 {
-    uts::State s(3);
-    s.put(uts::Cross, uts::Pos{0, 0});
-    s.put(uts::Cross, uts::Pos{0, 1});
-    s.put(uts::Cross, uts::Pos{1, 1});
-    s.put(uts::Circle, uts::Pos{0, 2});
-    s.put(uts::Circle, uts::Pos{2, 0});
-    s.put(uts::Circle, uts::Pos{2, 1});
+
 
     // X X O
     //   X  
@@ -35,12 +29,16 @@ int main()
     // O X O 
     // O O 
 
-    s.put(uts::Circle, uts::Pos{1, 2});
-    s.put(uts::Circle, uts::Pos{1, 0});
+    // // uts::Pos p(-1, -1);
+    // uts::State s(3);
+    // s.put(uts::Circle, uts::Pos{0, 0});
+    // s.put(uts::Cross,  uts::Pos{0, 1});
 
-    uts::minimax(s, uts::Circle, 10, p);
-    std::cout << p.x << " " << p.y << "\n";
-
-    // Game game;
+    // for (auto p : uts::options(s)) 
+    // {
+    //     std::cout << uts::minimax(s, uts::Circle, 10, p) << "\n";
+    //     std::cout << p.x << " " << p.y << "\n";
+    // }
+    Game game;
     return 0;
 }

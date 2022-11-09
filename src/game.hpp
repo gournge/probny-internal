@@ -7,7 +7,7 @@ class Game
 {
     public:
         Game();
-
+        void machine(uts::Pos&);
     private:
         uts::State state;
         int to_win;
@@ -26,10 +26,6 @@ class Game
         // move in a position (pvp)
         void player1();
         void player2(); 
-
-        // move in machine vs human 
-        // pos gets the value 
-        void machine(uts::Pos&);
 
         bool check(uts::Sign, uts::Pos);
 

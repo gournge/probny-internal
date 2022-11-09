@@ -7,58 +7,47 @@ using std::min;
 
 
 typedef uts::State st;
-typedef uts::Pos p;
+typedef uts::Sign  sn;
+typedef uts::Pos    p;
 
-// - returns the best atttainable score
-// - it doesnt matter if sign is circle or cross
-// - Cross is maximizing Circle is minimizing
-int uts::minimax(
-st& state, uts::Sign sign, int depth, p pos)
-{   
-    if (uts::check(state, sign, pos)) 
-    {
-        return sign == uts::Cross ? 1 : -1;
-    }
+// cross max
+// circle min
+int uts::eval(st& state, sn sign, p pos)
+{
     auto opts = uts::options(state);
-    if (!depth || !opts.size()) return 0;
-    
-    if (sign == uts::Cross)
-    {
-        int max_eval = -2;
-        for (p child : opts)
-        {
-            state.put(sign, child);
-            int eval = uts::minimax(state, uts::Circle, depth-1, pos);
-            max_eval = max(max_eval, eval);
-            state.put(uts::empty, child);
-        }
-        return max_eval;
-    } 
-    else
-    {
-        int min_eval  = 2;
-        for (p child : opts)
-        {
-            state.put(sign, child);
-            int eval = uts::minimax(state, uts::Cross, depth-1, pos);
-            min_eval = min(min_eval, eval);
-            state.put(uts::empty, child);
-        }
-        return min_eval;
+
+    // if no options : draw
+    if (!opts.size()) return 0; 
+
+    // eval of putting a sign at pos
+    if (uts::check(state, sign, pos)) 
+    {   
+        return (sign == uts::Cross) ? 1 : -1;
     }
 
+    auto other = (sign == sn::Circle) ? sn::Cross : sn::Circle;
+
+    for (p child : opts)
+    {
+        state.put(sign, child); 
+        int e = eval(state, other, pos);
+        if (e != 0) return e;
+    }
+    return 0;
 }
 
+// if putting a sign at a pos (on a grid "state") will result in a win
 bool uts::check(st& state, uts::Sign sign, p pos)
 {
     if (!pos.below(state.size)) return 0;
 
-    int to_win = state.size > 4 ? 4 : 3;
-
+    int to_win = (state.size > 4) ? 4 : 3;
+    int init_val = state.empty(pos) ? 1 : 0;
+    
     // perpendicular lines check 
     for (int i{0}; i < to_win; i++) 
     {
-        int ver{1}, hor{1}, diag1{1}, diag2{1};
+        int ver{init_val}, hor{init_val}, diag1{init_val}, diag2{init_val};
         for (int j{0}; j<to_win; j++) {
 
             int xnew = pos.x-i+j, ynew = pos.y-i+j;
@@ -76,13 +65,14 @@ bool uts::check(st& state, uts::Sign sign, p pos)
             if (p{pos.x-i-j, ynew}.below(state.size) &&
                 state.at(pos.x-i-j, ynew) == sign) diag2++;  
 
-            // std::cout << i << " " << j << "\n";
+            // std::cout << "\n" << i << " " << j << "\n";
             // std::cout << ver << " " << hor << " " 
             //         << diag1 << " " << diag2 << "\n";    
+            // std::cout << to_win << "\n";
             // std::cout << " - - - \n";
         }
-        if (ver == to_win || hor == to_win || 
-          diag1 == to_win || diag2 == to_win) return 1;
+        if ((ver >= to_win) || (hor >= to_win) || 
+          (diag1 >= to_win) || (diag2 >= to_win)) return 1;
     }
     return 0;
 }

@@ -6,7 +6,6 @@ namespace uts
 
 enum Sign
 {
-    //  0,     1,      2
     empty, Cross, Circle
 }; 
 
@@ -38,5 +37,7 @@ struct State
 int              minimax(State&, Sign, int, Pos);
 bool             check  (State&, Sign, Pos);
 std::vector<Pos> options(State&);
+
+int eval(State&, Sign, Pos);
 
 }
