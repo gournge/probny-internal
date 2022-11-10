@@ -14,11 +14,15 @@
 # Tictactoe in console
 This repository holds the contents of a C++ Tictactoe game. It is playable in console.
 ### Installation instructions
-Lorem ipsum.
+Right click and install the file `tictactoe.out`. Run it.
 ### Gameplay description
-First you enter the 
+Enter initial data as according to instructions.
 There are two types of gameplays to choose from.
 1. Player versus player
 2. Player versus computer
-In each case you will be asked to enter names 
-
+In each case you will be asked to enter names of the players and whether you want to enable some settings. 
+Each turn you enter: 
+1. the row number (0, 1, 2 ... size) 
+2. a space 
+3. the column number (0, 1, 2 ... size)
+The program will output if someone wins. Then the game ends.
