@@ -18,7 +18,11 @@ Game::Game()
         name2 = "Computer";
     } else {
         ASK(name1, "What is player's 1 name? ");
-        ASK(name2, "What is player's 2 name? ");
+        std::string temp;
+        do {
+        ASK(temp, "What is player's 2 name? "); 
+        } while (temp == name1);
+        name2 = temp;
     } 
 
     bool one_circle;
