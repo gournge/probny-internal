@@ -113,30 +113,17 @@ void Game::machine(uts::Pos& final)
 {
     auto opts = uts::options(state);
 
-    if(sign2 == uts::Circle) 
+    int win = (sign2 == uts::Circle) ? -1 : 1;
+
+    for (auto pos : opts) 
     {
-        for (auto pos : opts) 
+        if (uts::eval(state, sign2, pos) == win)
         {
-            if (uts::eval(state, uts::Circle, pos) == -1)
-            {
-                final = pos;
-                return;
-            }
+            final = pos;
+            return;
         }
-        final = opts[0];
     }
-    else
-    {
-        for (auto pos : opts) 
-        {
-            if (uts::eval(state, uts::Cross, pos) == 1)
-            {
-                final = pos;
-                return;
-            }
-        }
-        final = opts[0];
-    }
+    final = opts[0];
 }
 
 bool Game::check(uts::Sign sign, uts::Pos pos)

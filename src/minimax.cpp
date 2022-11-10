@@ -10,29 +10,45 @@ typedef uts::State st;
 typedef uts::Sign  sn;
 typedef uts::Pos    p;
 
+// evaluate the action of putting a sign at a pos during a state
+// the sign is not yet put on the board
 // cross max
 // circle min
 int uts::eval(st& state, sn sign, p pos)
 {
+    state.put(sign, pos);
+
     auto opts = uts::options(state);
 
-    // if no options : draw
-    if (!opts.size()) return 0; 
+    // if no options : it is a draw
+    if (!opts.size()) 
+    { 
+        state.put(sn::empty, pos);
+        return 0; 
+    }
 
     // eval of putting a sign at pos
     if (uts::check(state, sign, pos)) 
     {   
-        return (sign == uts::Cross) ? 1 : -1;
+        state.put(sn::empty, pos);
+        return (sign == sn::Cross) ? 1 : -1;
     }
 
     auto other = (sign == sn::Circle) ? sn::Cross : sn::Circle;
 
     for (p child : opts)
     {
-        state.put(sign, child); 
-        int e = eval(state, other, pos);
-        if (e != 0) return e;
+        state.put(sign, child);
+        int e = eval(state, other, child);
+        state.put(sn::empty, child);
+
+        if (e != 0) 
+        { 
+            state.put(sn::empty, pos);
+            return e;
+        }
     }
+    state.put(sn::empty, pos);
     return 0;
 }
 
