@@ -1,5 +1,7 @@
 #include "game.hpp"
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 
 
 #define ASK(IN, OUT) std::cout << OUT; std::cin >> IN; std::cout << "\n";
@@ -25,16 +27,16 @@ Game::Game()
         name2 = temp;
     } 
 
-    bool one_circle;
-    ASK(one_circle, "Is player's 1 sign circle? (0/1) ");
+    std::cout << "Who will play first (and with what sign) has been randomly chosen.\n";
+
+    srand((unsigned) time(NULL));
+
+    is_1_first = rand();
+
+    bool one_circle = rand();
     sign1 = !one_circle ? uts::Circle : uts::Cross;
     sign2 = !one_circle ? uts::Cross : uts::Circle;
 
-
-    std::cout << "Who will play first is now being randomly chosen.\n";
-
-    auto gen = std::bind(std::uniform_int_distribution<>(0,2),std::default_random_engine());
-    is_1_first = gen();
     who_won = uts::empty;
     skip = 0;
 
